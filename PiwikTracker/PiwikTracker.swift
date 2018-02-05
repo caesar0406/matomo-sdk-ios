@@ -314,14 +314,40 @@ extension PiwikTracker {
         track(view: view, url: url, dimensions: [])
     }
     
+    @objc public func trackView(view: [String], url: URL? = nil, dimensions: [CustomDimensionObj]) {
+        var dimenArray = [CustomDimension]()
+        for i in 0..<dimensions.count {
+            let dimension = dimensions[i]
+            let dimensionItem = CustomDimension(index: dimension.index, value: dimension.value)
+            dimenArray.append(dimensionItem)
+        }
+        track(view: view, url: url, dimensions: dimenArray)
+    }
+    
     @objc public func track(eventWithCategory category: String, action: String, name: String? = nil, number: NSNumber? = nil, url: URL? = nil) {
         let value = number == nil ? nil : number!.floatValue
         track(eventWithCategory: category, action: action, name: name, value: value, url: url)
     }
     
+    @objc public func trackEvent(eventWithCategory category: String, action: String, name: String? = nil, value: NSNumber? = nil, dimensions: [CustomDimensionObj], url: URL? = nil) {
+        var dimenArray = [CustomDimension]()
+        for i in 0..<dimensions.count {
+            let dimension = dimensions[i]
+            let dimensionItem = CustomDimension(index: dimension.index, value: dimension.value)
+            dimenArray.append(dimensionItem)
+        }
+        track(eventWithCategory: category, action: action, name: name, value: value as? Float, dimensions: dimenArray, url: url)
+    }
+    
     @available(*, deprecated, message: "use trackEventWithCategory:action:name:number:url instead")
     @objc public func track(eventWithCategory category: String, action: String, name: String? = nil, number: NSNumber? = nil) {
         track(eventWithCategory: category, action: action, name: name, number: number, url: nil)
+    }
+    
+    @objc public func setDiension(value: String, forIndex index: Int) {
+        let dimension = CustomDimension(index: index, value: value)
+        remove(dimensionAtIndex: dimension.index)
+        dimensions.append(dimension)
     }
 }
 
