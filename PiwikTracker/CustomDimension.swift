@@ -24,6 +24,7 @@ public struct CustomDimension {
     init(index: Int, value: String) {
         self.index = index
         self.value = value
+        super.init()
     }
 
     convenience override init() {
